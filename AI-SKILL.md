@@ -161,6 +161,95 @@ which ports are already occupied by registered widgets and agents?"_
   Record these as the occupied port set.
 - **Bonjour not yet running** — ask the developer to list any occupied ports manually.
 
+**Question 4: GitHub account**
+
+_"Do you have a GitHub account?"_
+
+**Why a GitHub account is needed — explain this if the developer asks or does not have one:**
+
+> A widget lives in two places once it is built. The first is a **GitHub repository** —
+> this is where the source code lives, where changes are tracked, and where other
+> developers can find and contribute to it. The second is a **Docker Hub image** — this
+> is the distributable, runnable artefact that any WCP host can pull and launch.
+>
+> Here is the full lifecycle from code to running widget on someone else's machine:
+>
+> 1. You write the widget's source code and push it to a GitHub repository.
+> 2. A Docker image is built from that source — a static, versioned snapshot of
+>    everything the widget needs to run (code, dependencies, runtime).
+> 3. That image is pushed to Docker Hub, where it gets a permanent address called an
+>    OCI reference (e.g. `yourname/wcp-widget-example:1.0.0`).
+> 4. When you export an orchestration containing your widget, that OCI reference is
+>    embedded in the `.WCPA` file.
+> 5. Anyone who imports that `.WCPA` file into their WCP host — whether Penrith Beacon
+>    Design Studio or any other WCP-compliant host — has the orchestration file pull
+>    the image automatically from Docker Hub via the Bonjour service and launch it as
+>    a running container.
+> 6. A **container** is the live, running instance of the image — it has its own network
+>    port, its own isolated filesystem, and its own lifecycle. The host dashboard loads
+>    the widget's UI from that container into an iframe card.
+>
+> Without GitHub: no source control, no collaboration, no open-source presence.
+> Without Docker Hub: no distributable image, no automatic pull on import, no WCP
+> distribution lifecycle.
+
+- **If the developer has a GitHub account:** ask for their GitHub username and a
+  Personal Access Token (PAT) with **`repo` scope** (needed to create the repository,
+  push code, and later push documentation).
+- **If they do not have an account:** explain the lifecycle above, then walk them through
+  creating one at [github.com](https://github.com). Do not proceed with PAT collection
+  until the account exists.
+
+**Question 5: Docker Hub account**
+
+_"Do you have a Docker Hub account?"_
+
+*(Docker Hub is required for widget distribution — see the lifecycle explanation above.
+Agents do not require Docker Hub; this question is specifically relevant to widget builds.)*
+
+- **If the developer has a Docker Hub account:** ask for their Docker Hub username and
+  an **Access Token** with Read, Write, and Delete permissions on repositories (needed
+  to push the image and, later, for automated audit and release workflows).
+- **If they do not have an account:** direct them to [hub.docker.com](https://hub.docker.com)
+  to create a free account. Note that the free tier supports unlimited public repositories,
+  which is sufficient for distributable WCP widgets.
+
+**Credentials storage**
+
+Once both tokens are collected, ask the developer where to store them:
+
+> _"I need to save these credentials securely so they can be used throughout the build
+> and deployment pipeline. I recommend storing them at `~/wcp-credentials/credentials.md`
+> — a folder outside any source repository. Would you like to use that location, or
+> specify a different path?"_
+
+Rules:
+- **Do not write the credentials file until the developer confirms the path.**
+- The default path `~/wcp-credentials/credentials.md` places the file outside any
+  project directory and outside any git repository.
+- If the developer chooses a path inside a git repository, add the filename to that
+  repository's `.gitignore` immediately, before writing the file.
+- If the chosen path does not exist, create it with `mkdir -p`.
+
+Credentials file format:
+
+```markdown
+# WCP Build Credentials
+# ⛔ DO NOT COMMIT THIS FILE TO SOURCE CONTROL
+# Store this file outside all git repositories, or ensure it is in .gitignore.
+
+## GitHub
+GITHUB_USERNAME=
+GITHUB_PAT=
+
+## Docker Hub
+DOCKERHUB_USERNAME=
+DOCKERHUB_TOKEN=
+```
+
+Record the confirmed credentials file path — it must be carried forward to every
+subsequent pipeline stage.
+
 ### Step 2 — Ask what they want to build
 
 _"What would you like to build?"_
@@ -175,14 +264,17 @@ are refined during the design phase in the specialist skill.
 |----------------|--------|
 | A widget / dashboard component / UI panel / something in a card | Read [wcp-ai-build-widget AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-widget/blob/main/AI-SKILL.md) and follow it |
 | An agent / host service / background process / something that reads local data | Read [wcp-ai-build-agent AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-agent/blob/main/AI-SKILL.md) and follow it |
-| Both a widget and an agent | Complete the agent skill first (it defines the data source), then the widget skill (it consumes it) |
+| Both a widget and an agent | Run both pipelines **in parallel within the same conversation**. Both specialist skills proceed simultaneously, converging at integration points (port assignment, data contract, `host.docker.internal` reference). See parallel pipeline notes in each specialist skill. |
 | Unsure | Ask clarifying questions about the desired outcome — what will the user see or do? Map to widget if it has a UI, agent if it only serves data |
 
 **Before routing, announce your decision** — tell the developer which specialist skill you
 are moving to and why, so they can correct you if the routing is wrong.
 
-**Carry both sets of answers forward** when handing off to the specialist skill:
-- The Step 1 context answers (host dashboard, Bonjour port, occupied ports)
+**Carry all of the following forward** when handing off to the specialist skill:
+- Step 1 context: host dashboard, Bonjour port, occupied port set
+- GitHub username and PAT
+- Docker Hub username and access token
+- Credentials file path
 - The developer's full Step 2 answer — their complete description of what they want to
   build, verbatim. Do not summarise or reduce it. The specialist skill will use this to
   pre-populate answers to its design questions and skip anything already covered.
