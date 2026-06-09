@@ -120,7 +120,7 @@ for the new artefact. There is no safe fallback.
 
 ---
 
-> ⛔ **SECURITY CONSTRAINT — Bonjour must be on the local machine**
+> ⛔ **SECURITY CONSTRAINT — Bonjour must be on the local machine, loopback-bound**
 >
 > The Bonjour service MUST be running on `127.0.0.1` (the local machine). This is a hard
 > security requirement, not a preference. The WCP Bonjour service does not currently
@@ -128,6 +128,18 @@ for the new artefact. There is no safe fallback.
 > and agent registrations to other machines on that network.
 >
 > **This skill will not query a Bonjour service at any address other than `127.0.0.1`.**
+>
+> **Technical enforcement — docker-compose.yml port binding:**
+> The Bonjour container's `docker-compose.yml` MUST bind the port as:
+> ```yaml
+> ports:
+>   - "127.0.0.1:3737:3737"
+> ```
+> The form `"3737:3737"` (without the `127.0.0.1:` prefix) binds to all interfaces
+> (`0.0.0.0`) and is **non-compliant**, regardless of intent or any other configuration.
+> This is the technical enforcement of the loopback-only requirement. The AI must flag
+> this as an error if it encounters a Bonjour `docker-compose.yml` that uses the
+> unbound form.
 >
 > If the developer states that the Bonjour service is on a network address:
 > 1. Refuse to query it and state this constraint clearly.
