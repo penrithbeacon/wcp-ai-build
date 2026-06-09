@@ -83,6 +83,43 @@ Design Studio), or starting from scratch?
 **Question 2:** What port is the WCP Bonjour discovery service running on?
 (The default is 3737, but it may have been configured differently.)
 
+#### If the developer does not know the Bonjour port
+
+Apply the following decision tree:
+
+**Case A — Developer is using Penrith Beacon Design Studio**
+
+The Bonjour agent is a mandatory component of the Penrith Beacon suite. It runs as a
+menu bar agent on macOS, visible as an icon near the clock in the top-right of the screen.
+
+Tell the developer:
+
+> _"The Bonjour discovery agent should be running as a menu bar icon near the clock at
+> the top right of your screen. Tap that icon — it will display the port the Bonjour
+> service is running on."_
+
+Once the developer confirms the port, record it and proceed.
+
+**Case B — Developer is using a different WCP host dashboard**
+
+Ask the developer to describe what they know about their host dashboard and its
+configuration. Use that information to help identify the Bonjour port — for example,
+by checking configuration files, environment variables, or docker-compose.yml for the
+host, or by querying `docker ps` to identify a running Bonjour container.
+
+**Case C — Port cannot be determined**
+
+If the developer cannot confirm the Bonjour port after working through Cases A or B:
+
+> **Do not proceed.** The Bonjour port is required before this skill can continue.
+> Explain this to the developer and offer to help them get the service running before
+> resuming.
+
+Proceeding without a confirmed Bonjour port would result in incorrect port assignments
+for the new artefact. There is no safe fallback.
+
+---
+
 > ⛔ **SECURITY CONSTRAINT — Bonjour must be on the local machine**
 >
 > The Bonjour service MUST be running on `127.0.0.1` (the local machine). This is a hard
@@ -107,8 +144,10 @@ Design Studio), or starting from scratch?
 > *This constraint will be updated when the Bonjour service publishes verified network
 > security support in its Docker Hub documentation.*
 
-If Bonjour is not yet running, note this — it will affect service discovery for the new
-artefact. Proceed to Question 3 and ask the developer to list occupied ports manually.
+---
+
+If Bonjour is not yet running at all, note this and proceed to Question 3 — the developer
+will need to list occupied ports manually.
 
 **Question 3:** Ask permission to query the Bonjour service:
 
