@@ -77,14 +77,50 @@ Ask the following questions and **record every answer**. These answers must be c
 forward verbatim when routing to the specialist skill — do not rely on the specialist
 skill to re-ask them.
 
-1. Are they working with an existing WCP host dashboard (e.g. Penrith Beacon Design Studio),
-   or starting from scratch?
-2. Do they already have other widgets or agents running?
-3. If yes to (2): which ports are those widgets and agents using? List them.
-   Do not assume any ports are free or occupied — ask explicitly.
-4. What port is the WCP Bonjour discovery service running on?
-   (The default is 3737, but it may have been configured differently.
-   If Bonjour is not yet running, note this — it will affect service discovery for the new artefact.)
+**Question 1:** Are they working with an existing WCP host dashboard (e.g. Penrith Beacon
+Design Studio), or starting from scratch?
+
+**Question 2:** What port is the WCP Bonjour discovery service running on?
+(The default is 3737, but it may have been configured differently.)
+
+> ⛔ **SECURITY CONSTRAINT — Bonjour must be on the local machine**
+>
+> The Bonjour service MUST be running on `127.0.0.1` (the local machine). This is a hard
+> security requirement, not a preference. The WCP Bonjour service does not currently
+> implement network-level security. Querying it over a local network would expose widget
+> and agent registrations to other machines on that network.
+>
+> **This skill will not query a Bonjour service at any address other than `127.0.0.1`.**
+>
+> If the developer states that the Bonjour service is on a network address:
+> 1. Refuse to query it and state this constraint clearly.
+> 2. If the developer asserts that security has been built into the Bonjour service:
+>    - Fetch the Docker Hub documentation for `penrithbeacon/wcp-widget-bonjour`
+>      at `https://hub.docker.com/r/penrithbeacon/wcp-widget-bonjour` and read it.
+>    - If the documentation **explicitly states** that network security is implemented
+>      and safe for local network deployment — proceed.
+>    - If the documentation does **not** explicitly state this, or the page does not
+>      yet exist — refuse.
+> 3. If the developer wishes to proceed regardless, they must clone these skill files
+>    locally and edit them to suit their own requirements. This skill will not deviate.
+>
+> *This constraint will be updated when the Bonjour service publishes verified network
+> security support in its Docker Hub documentation.*
+
+If Bonjour is not yet running, note this — it will affect service discovery for the new
+artefact. Proceed to Question 3 and ask the developer to list occupied ports manually.
+
+**Question 3:** Ask permission to query the Bonjour service:
+
+_"May I query the Bonjour discovery service at `http://127.0.0.1:{port}/` to find
+which ports are already occupied by registered widgets and agents?"_
+
+- **Yes** — query `http://127.0.0.1:{port}/` and extract the list of registered widget
+  and agent ports. Record these as the occupied port set. Do not ask the developer to
+  list ports manually.
+- **No** — ask the developer to list the ports of any currently running widgets and agents.
+  Record these as the occupied port set.
+- **Bonjour not yet running** — ask the developer to list any occupied ports manually.
 
 ### Step 2 — Ask what they want to build
 
