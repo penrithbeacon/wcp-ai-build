@@ -380,4 +380,6 @@ each one is readable by developers at any level.
 | [wcp-ai-build-widget](https://github.com/penrithbeacon/wcp-ai-build-widget) | Build a WCP widget | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-widget/blob/main/AI-SKILL.md) |
 | [wcp-ai-build-agent](https://github.com/penrithbeacon/wcp-ai-build-agent) | Build a WCP agent (platform-agnostic design) | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-agent/blob/main/AI-SKILL.md) |
 | [wcp-ai-build-agent-mac](https://github.com/penrithbeacon/wcp-ai-build-agent-mac) | Build a macOS native agent | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-agent-mac/blob/main/AI-SKILL.md) |
-| [wcp-ai-automation](https://github.com/penrithbeacon/wcp-ai-automation) | Document, audit, and deploy a widget | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-automation/blob/main/AI-SKILL.md) |
+| [wcp-ai-release](https://github.com/penrithbeacon/wcp-ai-release) | Release any WCP artefact — entry point | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-release/blob/main/AI-SKILL.md) |
+| [wcp-ai-release-widget](https://github.com/penrithbeacon/wcp-ai-release-widget) | Release a WCP widget | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-release-widget/blob/main/AI-SKILL.md) |
+| [wcp-ai-release-agent](https://github.com/penrithbeacon/wcp-ai-release-agent) | Release a WCP agent | [AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-release-agent/blob/main/AI-SKILL.md) |
