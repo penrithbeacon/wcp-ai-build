@@ -178,8 +178,18 @@ are refined during the design phase in the specialist skill.
 | Both a widget and an agent | Complete the agent skill first (it defines the data source), then the widget skill (it consumes it) |
 | Unsure | Ask clarifying questions about the desired outcome — what will the user see or do? Map to widget if it has a UI, agent if it only serves data |
 
-**Carry the Step 1 context answers forward** when handing off to the specialist skill.
-Do not attempt to perform the build from this document.
+**Before routing, announce your decision** — tell the developer which specialist skill you
+are moving to and why, so they can correct you if the routing is wrong.
+
+**Carry both sets of answers forward** when handing off to the specialist skill:
+- The Step 1 context answers (host dashboard, Bonjour port, occupied ports)
+- The developer's full Step 2 answer — their complete description of what they want to
+  build, verbatim. Do not summarise or reduce it. The specialist skill will use this to
+  pre-populate answers to its design questions and skip anything already covered.
+
+**Do not ask any design questions from this document.** Design questions are the exclusive
+responsibility of the specialist skill. The moment you identify the artefact type, route —
+do not begin designing here.
 
 **Note on host applications:** If the developer's answer suggests they want to build a WCP
 *host* (a dashboard application) rather than a widget or agent, clarify — host development
