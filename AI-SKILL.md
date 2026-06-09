@@ -73,12 +73,18 @@ Use this skill when a developer asks you to help them build a WCP artefact.
 
 ### Step 1 — Orient the developer
 
-Briefly confirm the context:
-- Are they working with an existing WCP host dashboard (e.g. Penrith Beacon Design Studio)?
-- Do they already have other widgets or agents running?
-- Are they starting from scratch?
+Ask the following questions and **record every answer**. These answers must be carried
+forward verbatim when routing to the specialist skill — do not rely on the specialist
+skill to re-ask them.
 
-This context informs port selection and integration decisions in the specialist skills.
+1. Are they working with an existing WCP host dashboard (e.g. Penrith Beacon Design Studio),
+   or starting from scratch?
+2. Do they already have other widgets or agents running?
+3. If yes to (2): which ports are those widgets and agents using? List them.
+   Do not assume any ports are free or occupied — ask explicitly.
+4. What port is the WCP Bonjour discovery service running on?
+   (The default is 3737, but it may have been configured differently.
+   If Bonjour is not yet running, note this — it will affect service discovery for the new artefact.)
 
 ### Step 2 — Ask what they want to build
 
@@ -97,7 +103,12 @@ are refined during the design phase in the specialist skill.
 | Both a widget and an agent | Complete the agent skill first (it defines the data source), then the widget skill (it consumes it) |
 | Unsure | Ask clarifying questions about the desired outcome — what will the user see or do? Map to widget if it has a UI, agent if it only serves data |
 
-**Do not attempt to perform the build from this document.** Hand off to the specialist skill.
+**Carry the Step 1 context answers forward** when handing off to the specialist skill.
+Do not attempt to perform the build from this document.
+
+**Note on host applications:** If the developer's answer suggests they want to build a WCP
+*host* (a dashboard application) rather than a widget or agent, clarify — host development
+is outside the scope of this namespace.
 
 ---
 
