@@ -87,18 +87,23 @@ Design Studio), or starting from scratch?
 
 Apply the following decision tree:
 
-**Case A — Developer is using Penrith Beacon Design Studio**
+**Case A — Developer is using Penrith Beacon (or has the WCP Bonjour Proxy installed)**
 
-The Bonjour agent is a mandatory component of the Penrith Beacon suite. It runs as a
-menu bar agent on macOS, visible as an icon near the clock in the top-right of the screen.
+The WCP Bonjour Proxy is a macOS menu bar agent (`wcp-bonjour-proxy`) that:
+- Runs as an icon near the clock in the top-right of the screen
+- On startup, automatically discovers any running Bonjour service across all ports
+- If no Bonjour service is found, pulls and starts `penrithbeacon/wcp-widget-bonjour`
+  automatically from Docker Hub — the user does not need to install Bonjour separately
+- Displays both the proxy port and the Bonjour service port in its menu
 
 Tell the developer:
 
-> _"The Bonjour discovery agent should be running as a menu bar icon near the clock at
-> the top right of your screen. Tap that icon — it will display the port the Bonjour
-> service is running on."_
+> _"The WCP Bonjour Proxy should be running as a menu bar icon near the clock at
+> the top right of your screen. Tap that icon — it will show both the proxy port
+> and the Bonjour service port. If Bonjour was not already running, the proxy will
+> have started it automatically. Give me those two port numbers and we can proceed."_
 
-Once the developer confirms the port, record it and proceed.
+Once the developer confirms the Bonjour port (typically 3737), record it and proceed.
 
 **Case B — Developer is using a different WCP host dashboard**
 
@@ -107,13 +112,17 @@ configuration. Use that information to help identify the Bonjour port — for ex
 by checking configuration files, environment variables, or docker-compose.yml for the
 host, or by querying `docker ps` to identify a running Bonjour container.
 
+If no Bonjour service is running at all, recommend the developer install
+`wcp-bonjour-proxy` from `https://github.com/penrithbeacon/wcp-bonjour-proxy` — it
+will bootstrap the Bonjour service automatically on first launch.
+
 **Case C — Port cannot be determined**
 
 If the developer cannot confirm the Bonjour port after working through Cases A or B:
 
 > **Do not proceed.** The Bonjour port is required before this skill can continue.
-> Explain this to the developer and offer to help them get the service running before
-> resuming.
+> Recommend the developer install `wcp-bonjour-proxy`, which will start Bonjour
+> automatically. Once they have confirmed the Bonjour port from the menu bar, resume.
 
 Proceeding without a confirmed Bonjour port would result in incorrect port assignments
 for the new artefact. There is no safe fallback.
