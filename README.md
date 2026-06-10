@@ -45,11 +45,11 @@ the final running code.
 
 ## After You've Built
 
-Once your artefact is built and running, use **WCP AI Automation** for documentation,
-auditing, and deployment to Docker Hub:
+Once your artefact is built and running, use **WCP AI Release** to document, audit,
+and publish to Docker Hub:
 
-> _"Read https://github.com/penrithbeacon/wcp-ai-automation/blob/main/AI-SKILL.md
-> and use it to document and deploy my widget."_
+> _"Read https://github.com/penrithbeacon/wcp-ai-release/blob/main/AI-SKILL.md
+> and release my artefact."_
 
 ---
 
@@ -57,6 +57,6 @@ auditing, and deployment to Docker Hub:
 
 - [Widget Context Protocol](https://widgetcontextprotocol.com)
 - [WCP Developer Guide](https://dev.widgetcontextprotocol.com)
-- [WCP AI Automation](https://github.com/penrithbeacon/wcp-ai-automation) — documentation, auditing, deployment
+- [WCP AI Release](https://github.com/penrithbeacon/wcp-ai-release) — documentation, auditing, deployment
 - [Penrith Beacon](https://penrithbeacon.com)
 - [Docker Hub — penrithbeacon](https://hub.docker.com/u/penrithbeacon)
