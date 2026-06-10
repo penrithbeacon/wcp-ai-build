@@ -326,7 +326,7 @@ WCP 2.1.0 — specification at [widgetcontextprotocol.com](https://widgetcontext
 - Communicate with the dashboard via postMessage (theme, context, orchestration state)
 - Registered with the host by pointing to the container's port
 - Can be published to Docker Hub and pulled by any developer worldwide
-- Build standard: [WIDGET-BUILD-SPEC.md](https://github.com/penrithbeacon/wcp-ai-automation/blob/main/standards/WIDGET-BUILD-SPEC.md)
+- Build standard: [WIDGET-BUILD-SPEC.md](https://github.com/penrithbeacon/wcp-ai-release-widget/blob/main/standards/WIDGET-BUILD-SPEC.md)
 
 ### Agents
 
