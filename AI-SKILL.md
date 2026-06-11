@@ -317,6 +317,7 @@ are refined during the design phase in the specialist skill.
 | An agent / host service / background process / something that reads local data | Read [wcp-ai-build-agent AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-build-agent/blob/main/AI-SKILL.md) and follow it |
 | Both a widget and an agent | Run both pipelines **in parallel within the same conversation**. Both specialist skills proceed simultaneously, converging at integration points (port assignment, data contract, `host.docker.internal` reference). See parallel pipeline notes in each specialist skill. |
 | Unsure | Ask clarifying questions about the desired outcome — what will the user see or do? Map to widget if it has a UI, agent if it only serves data |
+| Add a feature / extend / modify / improve an existing widget or agent | Follow the **Add Feature to Existing Artefact** flow below |
 
 **Before routing, announce your decision** — tell the developer which specialist skill you
 are moving to and why, so they can correct you if the routing is wrong.
@@ -337,6 +338,86 @@ do not begin designing here.
 **Note on host applications:** If the developer's answer suggests they want to build a WCP
 *host* (a dashboard application) rather than a widget or agent, clarify — host development
 is outside the scope of this namespace.
+
+---
+
+### Skill: Add Feature to Existing Widget/Agent
+
+Use this flow when a developer wants to extend, modify, or improve an artefact that
+already exists — rather than building something new.
+
+#### Gate 1 — Identify the artefact
+
+Establish:
+- Which widget or agent is being modified (name, Docker Hub image or agent binary path)
+- Current version (from `WIDGET_VERSION` constant or equivalent in source)
+- Whether the source repository is accessible (GitHub URL or local path)
+
+Do not proceed until all three are confirmed.
+
+#### Gate 2 — Describe the feature
+
+Ask the developer to describe what they want to add or change. Capture requirements
+completely before touching code. Ask clarifying questions until there is no ambiguity
+about scope, behaviour, or expected output.
+
+#### Gate 3 — Version bump decision
+
+State the appropriate version bump before writing any code:
+
+- **Patch** (`x.y.Z+1`) — bug fixes, UI tweaks, non-breaking endpoint additions,
+  internal refactors with no external behaviour change
+- **Minor** (`x.Y+1.0`) — new user-visible feature, new optional WCP endpoint added,
+  new manifest field, data schema change
+
+State the chosen bump type and reason. The developer may override. Record the
+new target version and carry it forward.
+
+#### Gate 4 — Implement
+
+Make all code changes. Apply all WCP conventions that apply to the artefact type:
+- Widgets: theme awareness, `wcp:ready`, `wcp:request-theme`, no `100vh`, theming scrollbars
+- Agents: loopback-only binding, PATH extension for credential helpers if Docker is used
+
+#### Gate 5 — Default orchestration checkpoint (widgets only)
+
+Before running the release pipeline, ask:
+
+> _"Does this widget include a default orchestration? A default orchestration is a `.wcpa`
+> file bundled inside the image at `GET /widget/default.wcpa`. When present, users who pull
+> this widget from the Bonjour catalogue can download a ready-made orchestration for it with
+> one click. If you have a `.wcpa` file to bundle, provide it now — or type 'skip'."_
+
+- **If provided:** save as `src/static/default.wcpa`; add the endpoint to `app.py`:
+  ```python
+  @app.route("/widget/default.wcpa")
+  def default_wcpa():
+      path = pathlib.Path("/app/static/default.wcpa")
+      if not path.exists():
+          return "", 404
+      return send_file(path, as_attachment=True,
+                       download_name="default.wcpa",
+                       mimetype="application/octet-stream")
+  ```
+  Verify the Dockerfile copies `src/static/` → `/app/static/`.
+  Add `"defaultOrchestration": "/widget/default.wcpa"` to the WCP manifest dict.
+
+- **If skipped:** proceed without it. The Bonjour download button will not appear for
+  this widget.
+
+#### Gate 6 — Mandatory release
+
+The feature is not complete until it is released. Announce:
+
+> _"The feature is implemented. I will now run the release pipeline to build, audit,
+> and publish the updated artefact."_
+
+Route to the appropriate release skill:
+- Widget → read and follow [wcp-ai-release-widget AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-release-widget/blob/main/AI-SKILL.md)
+- Agent → read and follow [wcp-ai-release-agent AI-SKILL.md](https://github.com/penrithbeacon/wcp-ai-release-agent/blob/main/AI-SKILL.md)
+
+Do not consider this work complete until the release pipeline's audit gate passes and
+the artefact is published.
 
 ---
 
